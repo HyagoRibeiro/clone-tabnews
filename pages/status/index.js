@@ -22,16 +22,15 @@ export default function StatusPage() {
       }}
     >
       <h1>Status</h1>
-      {data &&
-        Object.keys(data?.dependencies?.database).map((value) => (
-          <StatusDatabaseRow
-            key={value}
-            accessKey={value}
-            isLoading={isLoading}
-            data={data}
-          />
-        ))}
       <UpdatedAt isLoading={isLoading} data={data} />
+      <h1>Database</h1>
+      {!isLoading && data ? (
+        Object.keys(data?.dependencies?.database).map((value) => (
+          <DatabaseStatusRow key={value} accessKey={value} data={data} />
+        ))
+      ) : (
+        <div>Carregando...</div>
+      )}
     </div>
   );
 }
@@ -47,16 +46,13 @@ function UpdatedAt(props) {
   return <div>Última atualização: {updatedAtText}</div>;
 }
 
-function StatusDatabaseRow(props) {
-  const { isLoading, data, accessKey } = props;
-  let databaseInfo = "Carregando...";
-  if (!isLoading && data?.dependencies?.database) {
-    databaseInfo = data?.dependencies?.database[accessKey];
-  }
+function DatabaseStatusRow(props) {
+  const { data, accessKey } = props;
+  const databaseText = data?.dependencies?.database[accessKey];
 
   return (
     <div>
-      {`${accessKey}:`} {databaseInfo}
+      {`${accessKey}:`} {databaseText}
     </div>
   );
 }
